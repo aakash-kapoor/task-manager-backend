@@ -30,4 +30,9 @@ export class BoardsController {
   delete(@Param('id') id: string, @Req() req: any) {
     return this.boardsService.deleteBoard(id, req.user.userId);
   }
+
+  @Get(':id')
+  getBoard(@Param('id') id: string, @Req() req: any) {
+    return this.boardsService.getBoardWithDetails(id, req.user.userId);
+  }
 }

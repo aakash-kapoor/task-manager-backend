@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
@@ -20,7 +20,11 @@ export class BoardsService {
         ownerId: userId,
       },
       include: {
-        tasks: true, // optional (good for frontend)
+        lists: {
+          include: {
+            tasks: true, // This fetches the tasks inside each list
+          }
+        }
       },
     });
   }
@@ -33,4 +37,34 @@ export class BoardsService {
       },
     });
   }
+
+  async getBoardWithDetails(boardId: string, userId: string) {
+  const board = await this.prisma.board.findFirst({
+    where: { 
+      id: boardId, 
+      ownerId: userId // Ensure the user actually owns this board
+    },
+    include: {
+      lists: {
+        orderBy: { order: 'asc' }, // Sort columns left-to-right
+        include: {
+          tasks: {
+            orderBy: { order: 'asc' }, // Sort cards top-to-bottom
+            include: {
+              assignedTo: {
+                select: { id: true, name: true, email: true } // Don't send the password hash!
+              }
+            }
+          }
+        }
+      }
+    }
+  });
+
+  if (!board) {
+    throw new NotFoundException('Board not found');
+  }
+
+  return board;
+}
 }

@@ -7,11 +7,12 @@ import { BoardsModule } from './boards/boards.module';
 import { TasksModule } from './tasks/tasks.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { ConfigModule } from '@nestjs/config';
+import { ListsModule } from './lists/lists.module';
 
 @Module({
   imports: [ConfigModule.forRoot({
       isGlobal: true,
-    }), AuthModule, UsersModule, BoardsModule, TasksModule, PrismaModule],
+    }), AuthModule, UsersModule, BoardsModule, TasksModule, PrismaModule, ListsModule],
   controllers: [AppController],
   providers: [AppService],
 })

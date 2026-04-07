@@ -6,13 +6,7 @@ generator client {
   provider = "prisma-client-js"
 }
 
-/// ADD ENUMS HERE
-
-enum Status {
-  todo
-  in_progress
-  done
-}
+// Status enum removed to allow for dynamic, custom-named lists
 
 enum Priority {
   low
@@ -27,7 +21,7 @@ model User {
   name      String
   role      String   @default("user")
   boards    Board[]
-  tasks     Task[]
+  tasks     Task[]   // Represents tasks assigned to this user
   createdAt DateTime @default(now())
 }
 
@@ -36,23 +30,39 @@ model Board {
   title     String
   owner     User     @relation(fields: [ownerId], references: [id])
   ownerId   String
-  tasks     Task[]
+  lists     List[]
   createdAt DateTime @default(now())
 }
 
-model Task {
-  id          String   @id @default(uuid())
-  title       String
-  description String?
-  status      Status   @default(todo)     
-  priority    Priority @default(medium)
-  dueDate     DateTime?
-  board       Board    @relation(fields: [boardId], references: [id])
-  boardId     String
-  assignedTo  User?    @relation(fields: [assignedToId], references: [id])
-  assignedToId String?
-  createdAt   DateTime @default(now())
+model List {
+  id        String   @id @default(uuid())
+  title     String
+  order     Float    // Required for horizontal drag-and-drop sorting of lists
+  board     Board    @relation(fields: [boardId], references: [id], onDelete: Cascade)
+  boardId   String
+  tasks     Task[]
+  createdAt DateTime @default(now())
 
   @@index([boardId])
+}
+
+model Task {
+  id           String    @id @default(uuid())
+  title        String
+  description  String?
+  priority     Priority  @default(medium)
+  order        Float     // Required for vertical drag-and-drop sorting within a list
+  dueDate      DateTime?
+  
+  // Replaced direct board relation with a list relation
+  list         List      @relation(fields: [listId], references: [id], onDelete: Cascade)
+  listId       String
+  
+  assignedTo   User?     @relation(fields: [assignedToId], references: [id])
+  assignedToId String?
+  
+  createdAt    DateTime  @default(now())
+
+  @@index([listId])
   @@index([assignedToId])
 }
