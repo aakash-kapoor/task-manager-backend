@@ -6,6 +6,20 @@ generator client {
   provider = "prisma-client-js"
 }
 
+/// ADD ENUMS HERE
+
+enum Status {
+  todo
+  in_progress
+  done
+}
+
+enum Priority {
+  low
+  medium
+  high
+}
+
 model User {
   id        String   @id @default(uuid())
   email     String   @unique
@@ -30,12 +44,15 @@ model Task {
   id          String   @id @default(uuid())
   title       String
   description String?
-  status      String
-  priority    String
+  status      Status   @default(todo)     
+  priority    Priority @default(medium)
   dueDate     DateTime?
   board       Board    @relation(fields: [boardId], references: [id])
   boardId     String
   assignedTo  User?    @relation(fields: [assignedToId], references: [id])
   assignedToId String?
   createdAt   DateTime @default(now())
+
+  @@index([boardId])
+  @@index([assignedToId])
 }
