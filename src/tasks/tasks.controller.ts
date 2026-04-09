@@ -25,6 +25,18 @@ export class TasksController {
     return this.tasksService.moveTask(id, body.newListId, body.newOrder);
   }
 
+  @Patch(':id')
+  async update(
+    @Param('id') id: string, 
+    @Body() body: { title?: string; description?: string }
+  ) {
+    const updatedTask = await this.tasksService.update(id, body);
+    return {
+      message: 'Task updated successfully',
+      task: updatedTask,
+    };
+  }
+
   @Delete(':id')
   deleteTask(@Param('id') id: string) {
     return this.tasksService.deleteTask(id);
