@@ -2,7 +2,7 @@ import { Body, Controller, Post, Get, UseGuards, Req } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { UsersService } from '../users/users.service';
 import { JwtGuard } from './jwt.guard';
-
+import { ApiBearerAuth } from '@nestjs/swagger';
 @Controller('auth')
 export class AuthController {
     constructor(private authService: AuthService, private usersService: UsersService) { }
@@ -19,6 +19,7 @@ export class AuthController {
 
     @Get('me')
     @UseGuards(JwtGuard)
+    @ApiBearerAuth()
    async getProfile(@Req() req: any) {
         const fullUser = await this.usersService.findById(req.user.userId);
         

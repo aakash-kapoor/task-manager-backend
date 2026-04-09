@@ -1,6 +1,10 @@
 import { Controller, Post, Body, Param, Patch, Delete, UseGuards } from '@nestjs/common';
 import { TasksService } from './tasks.service';
 import { JwtGuard } from '../auth/jwt.guard';
+import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
+@ApiTags('Tasks')
+@ApiBearerAuth()
+
 
 @Controller('tasks')
 @UseGuards(JwtGuard) // Protect these routes

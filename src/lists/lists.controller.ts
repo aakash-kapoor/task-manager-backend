@@ -1,6 +1,9 @@
 import { Controller, Post, Body, Param, Patch, Delete, UseGuards } from '@nestjs/common';
 import { ListsService } from './lists.service';
 import { JwtGuard } from '../auth/jwt.guard';
+import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
+@ApiTags('Lists')
+@ApiBearerAuth()
 
 @Controller('lists')
 @UseGuards(JwtGuard)

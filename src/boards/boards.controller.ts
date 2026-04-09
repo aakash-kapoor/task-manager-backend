@@ -10,6 +10,10 @@ import {
 } from '@nestjs/common';
 import { BoardsService } from './boards.service';
 import { JwtGuard } from 'src/auth/jwt.guard';
+import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
+
+@ApiTags('Boards')
+@ApiBearerAuth()
 
 @Controller('boards')
 @UseGuards(JwtGuard)
